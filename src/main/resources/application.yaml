@@ -1,0 +1,44 @@
+server:
+  port: ${SERVER_PORT:8080}
+
+spring:
+  application:
+    name: authentik-demo
+  security:
+    oauth2:
+      client:
+        registration:
+          super-app:
+            provider: super-app
+            ## ????? ???????? client id/secret ????? ??????? Applications -> Providers, ??????? ?????????? ? ?????? Edit
+            client-id: ${AUTHENTIK_SUPER_APP_CLIENT_ID:}
+            client-secret: ${AUTHENTIK_SUPER_APP_CLIENT_SECRET:}
+            scope: openid,profile,email
+            redirect-uri: ${AUTHENTIK_SUPER_APP_REDIRECT_URI:http://localhost:8080/login/oauth2/code/super-app}
+            authorization-grant-type: authorization_code
+            client-authentication-method: client_secret_post
+        provider:
+          super-app:
+            ## ????? ???????? uri ????? ??????? Applications -> Providers, ??????? ?????????? ? ?????? Edit
+            authorization-uri: ${AUTHENTIK_SUPER_APP_AUTHORIZATION_URI:http://localhost:9005/application/o/authorize/}
+            token-uri: ${AUTHENTIK_SUPER_APP_TOKEN_URI:http://localhost:9005/application/o/token/}
+            user-info-uri: ${AUTHENTIK_SUPER_APP_USER_INFO_URI:http://localhost:9005/application/o/userinfo/}
+            user-name-attribute: sub
+            issuer-uri: ${AUTHENTIK_SUPER_APP_ISSUER_URI:http://localhost:9005/application/o/super-app/}
+            jwk-set-uri: ${AUTHENTIK_SUPER_APP_JWK_URI:http://localhost:9005/application/o/super-app/jwks/}
+
+app:
+  authentik:
+    base-url: ${AUTHENTIK_BASE_URL:http://localhost:9005}
+    find-user-uri: ${AUTHENTIK_FIND_USERS_URI:/api/v3/core/users/}
+    find-user-by-id-uri: ${AUTHENTIK_FIND_USER_BY_ID_URI:/api/v3/core/users/{id}/}
+    create-user-uri: ${AUTHENTIK_CREATE_USER_URI:/api/v3/core/users/}
+    update-user-uri: ${AUTHENTIK_UPDATE_USER_URI:/api/v3/core/users/{id}/}
+    reset-user-password-uri: ${AUTHENTIK_RESET_USER_PASSWORD_URI:/api/v3/core/users/{id}/recovery_email/}
+    api-token: ${AUTHENTIK_API_TOKEN:}
+    email-stage-identity: ${AUTHENTIK_EMAIL_STAGE_IDENTITY:}
+    user-group:
+      authorization-entry-point: /oauth2/authorization/super-app
+      id: ${AUTHENTIK_USER_GROUP_ID:}
+      name: ${AUTHENTIK_USER_GROUP_NAME:dev-super-app-user}
+      user-type: ${AUTHENTIK_USER_TYPE:external}

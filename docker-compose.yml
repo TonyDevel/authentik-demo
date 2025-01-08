@@ -1,0 +1,74 @@
+services:
+  postgres: ## аусентик использует PG как основную БД
+    image: postgres:16-alpine
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: authentik
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: authentik_demo
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    command: "--requirepass authentik"
+
+
+  server:
+    image: ghcr.io/goauthentik/server:2024.6.3
+    restart: unless-stopped
+    command: server
+    environment:
+      AUTHENTIK_EMAIL__HOST: mailhog
+      AUTHENTIK_EMAIL__PORT: 1025
+      AUTHENTIK_EMAIL__USE_TLS: false
+      AUTHENTIK_EMAIL__USE_SSL: false
+      AUTHENTIK_EMAIL__FROM: authentik@localhost
+      AUTHENTIK_REDIS__HOST: redis
+      AUTHENTIK_REDIS__PASSWORD: authentik
+      AUTHENTIK_POSTGRESQL__HOST: postgres
+      AUTHENTIK_POSTGRESQL__USER: authentik
+      AUTHENTIK_POSTGRESQL__NAME: authentik_demo
+      AUTHENTIK_POSTGRESQL__PASSWORD: password
+      AUTHENTIK_SECRET_KEY: auth # super secret key
+      AUTHENTIK_LOG_LEVEL: trace
+    ports:
+      - "9005:9000"
+      - "9443:9443"
+    depends_on:
+      - postgres
+      - redis
+
+  worker:
+    image: ghcr.io/goauthentik/server:2024.6.3
+    restart: unless-stopped
+    command: worker
+    environment:
+      AUTHENTIK_EMAIL__HOST: mailhog
+      AUTHENTIK_EMAIL__PORT: 1025
+      AUTHENTIK_EMAIL__USE_TLS: false
+      AUTHENTIK_EMAIL__USE_SSL: false
+      AUTHENTIK_EMAIL__FROM: authentik@localhost
+      AUTHENTIK_REDIS__HOST: redis
+      AUTHENTIK_REDIS__PASSWORD: authentik
+      AUTHENTIK_POSTGRESQL__HOST: postgres
+      AUTHENTIK_POSTGRESQL__USER: authentik
+      AUTHENTIK_POSTGRESQL__NAME: authentik_demo
+      AUTHENTIK_POSTGRESQL__PASSWORD: password
+      AUTHENTIK_SECRET_KEY: auth # super secret key
+    user: root
+    depends_on:
+      - postgres
+      - redis
+      - mailhog
+
+  mailhog: # мок smtp сервер, UI доступен на порту 8025 (можно посмотреть все отправленные письма)
+    image: mailhog/mailhog
+    container_name: mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
