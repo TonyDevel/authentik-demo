@@ -10,7 +10,7 @@ spring:
         registration:
           super-app:
             provider: super-app
-            ## ????? ???????? client id/secret ????? ??????? Applications -> Providers, ??????? ?????????? ? ?????? Edit
+            ## you can find client id/secret in Authentik Applications -> Providers, click your provider and tap Edit
             client-id: ${AUTHENTIK_SUPER_APP_CLIENT_ID:}
             client-secret: ${AUTHENTIK_SUPER_APP_CLIENT_SECRET:}
             scope: openid,profile,email
@@ -19,7 +19,7 @@ spring:
             client-authentication-method: client_secret_post
         provider:
           super-app:
-            ## ????? ???????? uri ????? ??????? Applications -> Providers, ??????? ?????????? ? ?????? Edit
+            ## you can these uris in Authentik Applications -> Providers, click your provider
             authorization-uri: ${AUTHENTIK_SUPER_APP_AUTHORIZATION_URI:http://localhost:9005/application/o/authorize/}
             token-uri: ${AUTHENTIK_SUPER_APP_TOKEN_URI:http://localhost:9005/application/o/token/}
             user-info-uri: ${AUTHENTIK_SUPER_APP_USER_INFO_URI:http://localhost:9005/application/o/userinfo/}
