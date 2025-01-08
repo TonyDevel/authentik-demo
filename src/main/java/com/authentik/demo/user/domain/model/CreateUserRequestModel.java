@@ -7,6 +7,4 @@ import lombok.Value;
 @Builder
 public class CreateUserRequestModel {
     String email;
-
-    Boolean active;
 }

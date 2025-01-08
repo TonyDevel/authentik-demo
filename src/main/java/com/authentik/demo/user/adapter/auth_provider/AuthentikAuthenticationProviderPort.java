@@ -21,7 +21,7 @@ public class AuthentikAuthenticationProviderPort implements AuthenticationProvid
         final var existingUsers = client.findUsersByEmail(request.getEmail());
 
         if (existingUsers.getResults().isEmpty()) {
-            final var user = client.createUser(request.getEmail(), request.getActive());
+            final var user = client.createUser(request.getEmail());
             client.sendUserResetPassword(user.getId());
             return mapper.mapToModel(user);
         }

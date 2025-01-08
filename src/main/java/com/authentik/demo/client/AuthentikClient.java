@@ -30,13 +30,13 @@ public class AuthentikClient {
 
     private final AuthentikConfigurationProperties properties;
 
-    public AuthentikUserResponse createUser(String email, boolean enabled) {
+    public AuthentikUserResponse createUser(String email) {
         // for simplicity, we will use email as a username and name
         final var request = CreateAuthentikUserRequest.builder()
             .username(email)
             .name(email)
             .email(email)
-            .isActive(enabled)
+            .isActive(true)
             .groups(List.of(properties.getUserGroup().getId()))
             .type(properties.getUserGroup().getUserType())
             .path(properties.getUserGroup().getName())
