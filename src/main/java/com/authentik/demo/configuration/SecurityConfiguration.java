@@ -19,6 +19,7 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
@@ -31,7 +32,9 @@ public class SecurityConfiguration {
 
     @Bean
     @SneakyThrows
-    public SecurityFilterChain filterChain(HttpSecurity http, AuthentikConfigurationProperties properties) {
+    public SecurityFilterChain filterChain(HttpSecurity http,
+                                           AuthentikConfigurationProperties properties,
+                                           UserAuthenticationFilter authenticationFilter) {
         return http
             .cors(AbstractHttpConfigurer::disable)
             .csrf(AbstractHttpConfigurer::disable)
@@ -48,6 +51,7 @@ public class SecurityConfiguration {
                 .anyRequest()
                 .permitAll()
             )
+            .addFilterBefore(authenticationFilter, AnonymousAuthenticationFilter.class)
             .oauth2Login(Customizer.withDefaults())
             .build();
     }
