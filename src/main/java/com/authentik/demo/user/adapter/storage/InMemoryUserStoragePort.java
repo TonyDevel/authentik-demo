@@ -23,10 +23,11 @@ public class InMemoryUserStoragePort implements UserStoragePort {
             .email(request.getEmail())
             .externalId(externalId)
             .email(request.getEmail())
-            .active(request.getActive())
+            .active(true)
             .build();
 
-        return users.put(user.getId(), user);
+        users.put(user.getId(), user);
+        return user;
     }
 
     @Override
